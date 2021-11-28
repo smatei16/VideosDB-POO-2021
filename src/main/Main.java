@@ -7,6 +7,7 @@ import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
 import org.json.simple.JSONArray;
+import process.Process;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,8 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
-
+        Process process = new Process(input);
+        process.processTests(fileWriter, arrayResult);
         fileWriter.closeJSON(arrayResult);
     }
 }
