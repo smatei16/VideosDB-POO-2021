@@ -1,5 +1,9 @@
 package actor;
 
+import entertainment.Movie;
+import entertainment.Show;
+import process.Database;
+
 import java.util.List;
 import java.util.Map;
 
@@ -31,5 +35,32 @@ public final class Actor {
 
     public Map<ActorsAwards, Integer> getAwards() {
         return awards;
+    }
+
+
+    public double getActorAverageRating(Database database) {
+        int totalVideos = 0;
+        double totalRating = 0;
+
+        for (String video : this.filmography) {
+            for (Movie movie : database.getMovieDB()) {
+                if (movie.getName().equals(video)
+                        && Double.compare(movie.getAverageRating(), 0) == 0) {
+                   totalRating += movie.getAverageRating();
+                   totalVideos++;
+                   break;
+                }
+            }
+
+            for (Show show : database.getShowDB()) {
+                if (show.getName().equals(video)
+                        && Double.compare(show.getAverageRating(), 0) == 0) {
+                    totalRating += show.getAverageRating();
+                    totalVideos++;
+                    break;
+                }
+            }
+        }
+        return totalRating / totalVideos;
     }
 }
