@@ -28,6 +28,11 @@ public final class Process {
                 jsonObject = fileWriter.writeFile(actionInputData.getActionId(), "",
                         commands.processCommand(actionInputData));
                 jsonArray.add(jsonObject);
+            } else if (actionInputData.getActionType().equals(Constants.QUERY)) {
+                Query query = new Query(database);
+                jsonObject = fileWriter.writeFile(actionInputData.getActionId(), "",
+                        query.processQuery(actionInputData));
+                jsonArray.add(jsonObject);
             }
         }
     }

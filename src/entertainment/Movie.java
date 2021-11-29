@@ -42,6 +42,6 @@ public final class Movie extends Video {
     }
 
     public double getAverageRating() {
-        return sumRatings / totalRatings;
+        return totalRatings == 0 ? 0 : sumRatings/totalRatings;
     }
 }

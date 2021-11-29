@@ -45,7 +45,7 @@ public final class Actor {
         for (String video : this.filmography) {
             for (Movie movie : database.getMovieDB()) {
                 if (movie.getName().equals(video)
-                        && Double.compare(movie.getAverageRating(), 0) == 0) {
+                        && Double.compare(movie.getAverageRating(), 0) != 0) {
                    totalRating += movie.getAverageRating();
                    totalVideos++;
                    break;
@@ -54,13 +54,14 @@ public final class Actor {
 
             for (Show show : database.getShowDB()) {
                 if (show.getName().equals(video)
-                        && Double.compare(show.getAverageRating(), 0) == 0) {
+                        && Double.compare(show.getAverageRating(), Double.valueOf(0)) != 0) {
                     totalRating += show.getAverageRating();
                     totalVideos++;
                     break;
                 }
             }
         }
+        if(totalVideos == 0) return 0;
         return totalRating / totalVideos;
     }
 }

@@ -6,8 +6,8 @@ public final class Show extends Video {
     private int numberOfSeasons;
     private List<Season> seasons;
 
-    private double[] sumRatings;
-    private int[] totalRatings;
+    public double[] sumRatings;
+    public int[] totalRatings;
 
     public Show(final String name, final int year, final List<String> genres,
                 final List<String> actors, final int numberOfSeasons,
@@ -37,8 +37,10 @@ public final class Show extends Video {
         double totalSumRatings = 0;
         double seasonRating = 0;
         for (int i = 0; i < this.numberOfSeasons; i++) {
+            if (this.totalRatings[i] != 0) {
             seasonRating = this.sumRatings[i] / this.totalRatings[i];
             totalSumRatings += seasonRating;
+            }
         }
         return totalSumRatings / this.numberOfSeasons;
     }

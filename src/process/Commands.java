@@ -85,11 +85,12 @@ public final class Commands {
         if (!user.getHistory().containsKey(title)) {
             message.append("error -> " + title + " is not seen");
         } else if (user.getRated().contains(videoTitle.toString())) {
-            message.append("error -> " + title + " has already been rated");
+            message.append("error -> " + title + " has been already rated");
         } else if (actionInputData.getSeasonNumber() == 0) {
             Movie movie = (Movie) database.getVideoByName(title);
             movie.getRatings().add(actionInputData.getGrade());
             user.getRated().add(videoTitle.toString());
+            movie.updateAverageRating(actionInputData.getGrade());
             message.append("success -> " + title + " was rated with "
                     + actionInputData.getGrade() + " by " + user.getUsername());
         } else {
@@ -97,6 +98,7 @@ public final class Commands {
             Season season = show.getSeasons().get(actionInputData.getSeasonNumber() - 1);
             season.getRatings().add(actionInputData.getGrade());
             user.getRated().add(videoTitle.toString());
+            show.updateAverageRating(actionInputData.getGrade(), actionInputData.getSeasonNumber() - 1);
             message.append("success -> " + title + " was rated with "
                     + actionInputData.getGrade() + " by " + user.getUsername());
         }
