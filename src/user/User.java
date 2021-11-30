@@ -39,4 +39,9 @@ public final class User {
     public List<String> getRated() {
         return rated;
     }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 }

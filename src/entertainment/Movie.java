@@ -1,6 +1,5 @@
 package entertainment;
 
-import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,15 @@ public final class Movie extends Video {
         this.totalRatings = 0;
     }
 
+    public Movie(final String name, final int year, final List<String> genres,
+                 final List<String> actors, final int duration,
+                 final double sumRatings, final int totalRatings) {
+        this(name, year, genres, actors, duration);
+        this.sumRatings = sumRatings;
+        this.totalRatings = totalRatings;
+    }
+
+    @Override
     public int getDuration() {
         return duration;
     }
@@ -36,12 +44,25 @@ public final class Movie extends Video {
         this.ratings = ratings;
     }
 
-    public void updateAverageRating(double rating) {
+    /**
+     *
+     */
+    public void updateAverageRating(final double rating) {
             this.sumRatings += rating;
             this.totalRatings++;
     }
 
+    @Override
     public double getAverageRating() {
-        return totalRatings == 0 ? 0 : sumRatings/totalRatings;
+        return totalRatings == 0 ? 0 : sumRatings / totalRatings;
+    }
+
+
+    public double getSumRatings() {
+        return sumRatings;
+    }
+
+    public int getTotalRatings() {
+        return totalRatings;
     }
 }

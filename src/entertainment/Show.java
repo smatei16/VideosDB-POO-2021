@@ -6,8 +6,9 @@ public final class Show extends Video {
     private int numberOfSeasons;
     private List<Season> seasons;
 
-    public double[] sumRatings;
-    public int[] totalRatings;
+    private double[] sumRatings;
+    private int[] totalRatings;
+    private final int duration;
 
     public Show(final String name, final int year, final List<String> genres,
                 final List<String> actors, final int numberOfSeasons,
@@ -18,6 +19,12 @@ public final class Show extends Video {
 
         this.sumRatings = new double[this.numberOfSeasons];
         this.totalRatings = new int[this.numberOfSeasons];
+
+        int totalDuration = 0;
+        for (Season season : this.getSeasons()) {
+            totalDuration += season.getDuration();
+        }
+        this.duration = totalDuration;
     }
 
     public List<Season> getSeasons() {
@@ -28,11 +35,15 @@ public final class Show extends Video {
         return numberOfSeasons;
     }
 
-    public void updateAverageRating(double rating, int season) {
+    /**
+     *
+     */
+    public void updateAverageRating(final double rating, final int season) {
             this.sumRatings[season] += rating;
             this.totalRatings[season]++;
     }
 
+    @Override
     public double getAverageRating() {
         double totalSumRatings = 0;
         double seasonRating = 0;
@@ -43,5 +54,10 @@ public final class Show extends Video {
             }
         }
         return totalSumRatings / this.numberOfSeasons;
+    }
+
+    @Override
+    public int getDuration() {
+        return duration;
     }
 }

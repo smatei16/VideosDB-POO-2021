@@ -37,8 +37,10 @@ public final class Actor {
         return awards;
     }
 
-
-    public double getActorAverageRating(Database database) {
+    /**
+     *
+     */
+    public double getActorAverageRating(final Database database) {
         int totalVideos = 0;
         double totalRating = 0;
 
@@ -61,7 +63,11 @@ public final class Actor {
                 }
             }
         }
-        if(totalVideos == 0) return 0;
-        return totalRating / totalVideos;
+        return totalVideos == 0 ? 0 : totalRating / totalVideos;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

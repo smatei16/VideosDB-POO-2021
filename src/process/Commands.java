@@ -98,7 +98,8 @@ public final class Commands {
             Season season = show.getSeasons().get(actionInputData.getSeasonNumber() - 1);
             season.getRatings().add(actionInputData.getGrade());
             user.getRated().add(videoTitle.toString());
-            show.updateAverageRating(actionInputData.getGrade(), actionInputData.getSeasonNumber() - 1);
+            show.updateAverageRating(actionInputData.getGrade(),
+                    actionInputData.getSeasonNumber() - 1);
             message.append("success -> " + title + " was rated with "
                     + actionInputData.getGrade() + " by " + user.getUsername());
         }
