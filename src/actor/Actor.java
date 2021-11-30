@@ -66,6 +66,16 @@ public final class Actor {
         return totalVideos == 0 ? 0 : totalRating / totalVideos;
     }
 
+    /**
+     *
+     */
+    public int getNumberOfAwards() {
+        int numberOfAwards = 0;
+        for (int number : this.awards.values()) {
+            numberOfAwards += number;
+        }
+        return numberOfAwards;
+    }
     @Override
     public String toString() {
         return name;

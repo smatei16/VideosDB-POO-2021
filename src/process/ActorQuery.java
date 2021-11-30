@@ -126,8 +126,8 @@ public class ActorQuery {
     class AwardsComparator implements Comparator<Actor> {
         @Override
         public int compare(final Actor o1, final Actor o2) {
-            double awardsO1 = o1.getAwards().size();
-            double awardsO2 = o2.getAwards().size();
+            double awardsO1 = o1.getNumberOfAwards();
+            double awardsO2 = o2.getNumberOfAwards();
             if (Double.compare(awardsO1, awardsO2) == 0) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
             }

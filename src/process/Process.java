@@ -33,6 +33,11 @@ public final class Process {
                 jsonObject = fileWriter.writeFile(actionInputData.getActionId(), "",
                         query.processQuery(actionInputData));
                 jsonArray.add(jsonObject);
+            } else if (actionInputData.getActionType().equals(Constants.RECOMMENDATION)) {
+                Recommendation recommendation = new Recommendation(database);
+                jsonObject = fileWriter.writeFile(actionInputData.getActionId(), "",
+                        recommendation.processRecommendation(actionInputData));
+                jsonArray.add(jsonObject);
             }
         }
     }
