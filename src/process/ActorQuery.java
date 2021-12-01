@@ -11,18 +11,20 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- *
+ * process all the information for actor related queries
  */
 public class ActorQuery {
 
-    private Database database;
+    private final Database database;
 
     public ActorQuery(final Database database) {
         this.database = database;
     }
 
     /**
-     *
+     * process an actor query based on criteria
+     * @param actionInputData action
+     * @return query result
      */
     public String processActorQuery(final ActionInputData actionInputData) {
         return switch (actionInputData.getCriteria()) {
@@ -34,16 +36,18 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * process an average query
+     * @param actionInputData action
+     * @return query result
      */
     public String actorsAverage(final ActionInputData actionInputData) {
 
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Actor> actorSortedList = new ArrayList<>(database.getActorDB());
         actorSortedList.removeIf(actor ->
                 Double.compare(actor.getActorAverageRating(database), 0) == 0);
 
-        Collections.sort(actorSortedList, new AverageRatingComparator());
+        actorSortedList.sort(new AverageRatingComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(actorSortedList);
         }
@@ -54,16 +58,18 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * process an awards query
+     * @param actionInputData action
+     * @return query result
      */
     public String actorsAwards(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Actor> actorSortedList = new ArrayList<>(database.getActorDB());
         for (String award : actionInputData.getFilters().get(Constants.FILTER_AWARDS)) {
             actorSortedList.removeIf(actor -> award != null
                     && !actor.getAwards().containsKey(convertToAward(award)));
         }
-        Collections.sort(actorSortedList, new AwardsComparator());
+        actorSortedList.sort(new AwardsComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(actorSortedList);
         }
@@ -72,10 +78,12 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * process an filter description query
+     * @param actionInputData action
+     * @return query result
      */
     public String actorsFilterDescription(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Actor> actorSortedList = new ArrayList<>(database.getActorDB());
 
         for (String keyword : actionInputData.getFilters().get(Constants.FILTER_WORDS)) {
@@ -83,7 +91,7 @@ public class ActorQuery {
                     && !Pattern.compile("\\b" + keyword + "\\b", Pattern.CASE_INSENSITIVE)
                             .matcher(actor.getCareerDescription()).find());
         }
-        Collections.sort(actorSortedList, new NameComparator());
+        actorSortedList.sort(new NameComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(actorSortedList);
         }
@@ -92,7 +100,9 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * convert a String award to ActorAwards
+     * @param award String award
+     * @return award in ActorAwards
      */
     public ActorsAwards convertToAward(final String award) {
         return switch (award) {
@@ -106,7 +116,7 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * comparator for average rating sort
      */
     class AverageRatingComparator implements Comparator<Actor> {
         @Override
@@ -121,9 +131,9 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * comparator for awards sort
      */
-    class AwardsComparator implements Comparator<Actor> {
+    static class AwardsComparator implements Comparator<Actor> {
         @Override
         public int compare(final Actor o1, final Actor o2) {
             double awardsO1 = o1.getNumberOfAwards();
@@ -136,9 +146,9 @@ public class ActorQuery {
     }
 
     /**
-     *
+     * comparator for alphabetical sort
      */
-    class NameComparator implements Comparator<Actor> {
+    static class NameComparator implements Comparator<Actor> {
         @Override
         public int compare(final Actor o1, final Actor o2) {
             return o1.getName().compareToIgnoreCase(o2.getName());

@@ -2,12 +2,29 @@ package entertainment;
 
 import java.util.List;
 
+/**
+ * information about a serial
+ */
 public final class Show extends Video {
-    private int numberOfSeasons;
-    private List<Season> seasons;
-
-    private double[] sumRatings;
-    private int[] totalRatings;
+    /**
+     * number of seasons
+     */
+    private final int numberOfSeasons;
+    /**
+     * list of seasons
+     */
+    private final List<Season> seasons;
+    /**
+     * list of sum ratings for each season
+     */
+    private final double[] sumRatings;
+    /**
+     * list of total ratings for each season
+     */
+    private final int[] totalRatings;
+    /**
+     * total duration of the show
+     */
     private final int duration;
 
     public Show(final String name, final int year, final List<String> genres,
@@ -31,22 +48,20 @@ public final class Show extends Video {
         return seasons;
     }
 
-    public int getNumberOfSeasons() {
-        return numberOfSeasons;
-    }
-
     /**
-     *
+     * updates the sum of ratings and the total number of ratings for a season
+     * @param newRating the new rating given
+     * @param season the season for which the rating was given
      */
-    public void updateAverageRating(final double rating, final int season) {
-            this.sumRatings[season] += rating;
+    public void updateAverageRating(final double newRating, final int season) {
+            this.sumRatings[season] += newRating;
             this.totalRatings[season]++;
     }
 
     @Override
     public double getAverageRating() {
         double totalSumRatings = 0;
-        double seasonRating = 0;
+        double seasonRating;
         for (int i = 0; i < this.numberOfSeasons; i++) {
             if (this.totalRatings[i] != 0) {
             seasonRating = this.sumRatings[i] / this.totalRatings[i];

@@ -1,5 +1,6 @@
 Object Oriented Programming Course
 Homework - VideosDB
+Staicu Matei 323CD
 
 November 2021
 
@@ -8,31 +9,84 @@ https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema
 
 # About the code
 
-We provide the input tests, the logic that parses them and the checker that runs them.
-
 * test_db - contains the tests in JSON format
 * src
+   * actor
+        * modeleaza entitatea actor
+        * contine un enum pentru tipurile de awards
    * checker - the checker's sources including the checkstyle necessary files, not to be modified
    * fileio - classes for parsing the input files, not to be modified
    * common, utils
         * contain utility classes with constants and static methods
-        * you can add your own functionality in the existing classes or add new classes as well
-   * actor
-        * contains an enum for the types of awards an actor can have - do not modify it
-        * you can add here your actor related classes
    * entertainment
+        * modeleaza entitatile movie, show si video
         * contains an enum for the supported video genres - do not modify it
         * class for representing a Season of a tv show - do not modify it
-        * you can add here your entertainment related classes
+   * main
+   * process
+        * modeleaza toate clasele pentru comenzi, interogari si recomandari
+   * user - modeleaza entitatea user
 
-We encourage you to organize your implementation in packages based on the functionality their classes offer. Try to keep
-your code modular, readable and documented.
+    La inceput se introduc toate datele in database. Apoi, pentru fiecare actiune
+    se apeleaza metoda corespunzatoare, in functie de tipul actiunii.
+    Dupa crearea bazei de date, se va itera prin actions cu ajutorul clasei Process.
 
-# Testing
+    Comenzi:
+    * se verifica ce tip de comanda se va apela
+    * pentru comanda favorite se verifica daca videoul este deja in lista de favorite
+    a utilizatorului sau daca acesta nu a fost vazut de utilizator, caz in care se va
+    afisa eroare. In caz contrar, videoul se va adauga in lista de favorite.
+    * pentru comanda view, se verifica daca videoul a fost deja vazut, caz in care se
+    incrementeaza numarul de vizionari. In caz contrar, se adauga in istoricul utilizatorului
+    cu numarul de vizionari 1.
+    * pentru comanda rating se trateaza separat cazurile in care videoul este film sau serial.
+    Daca videoul nu a fost vazut sau are deja rating de la utilizator, se va afisa eroare. In
+    caz contrar, daca videoul este film, se va adauga in lista de rated a utilizatorului si se va
+    actualiza ratingul general al filmului; daca este serial, se va adauga sezonul in lista de
+    rated a utilizatorului si se va actualiza ratingul general al sezonului si al serialului.
 
-The Main class runs the checker on your implementation. Add the entry point to your implementation in it.
+    Queries:
+    * se verifica pentru ce tip de obiect este query-ul si se apeleaza metoda de process din
+    clasa de query corespunzatoare
+    * Query pentru actori
+        - se verifica ce tip de query se va apela
+        - pentru average se va adauga toata lista de actori din baza de date si se vor elimina
+        actorii cu rating 0. Se sorteaza lista cu ajutorul unui comparator si se afiseaza.
+        - pentru awards se va adauga toata lista de actori din baza de date si se vor elimina
+        actorii care nu au in lista de awards premiile cautate. Se sorteaza lista cu ajutorul
+        unui comparator si se afiseaza
+        - pentru filter description se va adauga toata lista de actori din baza de date din care
+        se vor elimina actorii care nu au in descriere keywordurile cautate. Se sorteaza lista si
+        se afiseaza
+    * Query pentru videouri
+        - se verifica ce tip de query se va apela
+        - pentru rating se va adauga toata lista de filme si seriale din baza de date din care
+        se vor elimina cele cu rating 0. Se sorteaza lista si se afiseaza primele N videouri.
+        - pentru favorite se va adauga toata lista de filme si seriale din baza de date din care
+        se vor elimina cele care nu sunt in nicio lista de favorite. Se sorteaza lista si se
+        afiseaza primele N.
+        - pentru longest se va adauga toata lista de filme si seriale din baza de date, se
+        filtreaza si se sorteaza. Se afiseaza primele N.
+        - pentru most viewed se va adauga toata lista de filme si seriale din baza de date,
+        se filtreaza, se sorteaza dupa numarul total de vizionari si se afiseaza primele N.
+    * Query pentru users
+        - se verifica ce tip de query se va apela (facut pentru o dezvoltare ulterioara)
+        - pentru number of ratings se vor adauga toti userii din baza de date si se vor elimina
+        cei cu 0 ratinguri date. Se sorteaza lista si se afiseaza primele N.
 
-Run Main to test your implementation from the IDE or from command line.
-
-Run the main method from Test class with the name of the input file from the command line and the result will be written
-to the out.txt file. Thus, you can compare this result with ref.
+    Recomandari:
+    * se verifica ce tip de recomandare se va apela
+    * pentru standard se adauga toate filmele si serialele din baza de date si se afiseaza primul
+    video care nu este in istoricul utilizatorului
+    * pentru best unseen se adauga toate filmele si serialele din baza de date, se elimina cele
+    care sunt deja in istoricul utilizatorului si se sorteaza lista. Daca lista e goala se va
+     afisa eroare, altfel se afiseaza primul video din lista
+     * pentru popular se verifica mai intai daca utilizatorul are cont premium. Mai departe se
+     adauga toate filmele si serialele din baza de date si se elimina cele vizionate. Se sorteaza
+     lista si se afiseaza primul video din cel mai popular gen.
+     * pentru favorite se verifica mai intai daca utilizatorul are cont premium. Mai departe se
+     adauga toate filmele si serialele din baza de date si se elimina cele vizionate. Se sorteaza
+     lista si se afiseaza primul video care e in cele mai multe liste favorite.
+     * pentru search se verifica mai intai daca utilizatorul are cont premium. Mai departe se
+     adauga toate filmele si serialele din baza de date din care se elimina cele deja vizionate
+     si cele care nu sunt din genul cautat. Se sorteaza lista si se afiseaza.

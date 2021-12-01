@@ -4,18 +4,20 @@ import common.Constants;
 import fileio.ActionInputData;
 
 /**
- *
+ * process all the information for queries
  */
 public class Query {
 
-    private Database database;
+    private final Database database;
 
     public Query(final Database database) {
         this.database = database;
     }
 
     /**
-     *
+     * process a query based on type
+     * @param actionInputData action
+     * @return query result
      */
     public String processQuery(final ActionInputData actionInputData) {
         switch (actionInputData.getObjectType()) {
@@ -34,7 +36,6 @@ public class Query {
 
             default:
                 return null;
-
         }
     }
 }

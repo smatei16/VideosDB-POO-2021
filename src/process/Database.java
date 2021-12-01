@@ -14,14 +14,30 @@ import user.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+/**
+ * all the information in the database
+ */
 public final class Database {
-    private List<Actor> actorDB;
-    private List<Movie> movieDB;
-    private List<Show> showDB;
-    private List<User> userDB;
-    private List<ActionInputData> actionsDB;
+    /**
+     * actor database
+     */
+    private final List<Actor> actorDB;
+    /**
+     * movie database
+     */
+    private final List<Movie> movieDB;
+    /**
+     * show database
+     */
+    private final List<Show> showDB;
+    /**
+     * user database
+     */
+    private final List<User> userDB;
+    /**
+     * action database
+     */
+    private final List<ActionInputData> actionsDB;
 
     public Database(final Input input) {
         this.actorDB = this.getActorsFromInput(input);
@@ -32,7 +48,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get list of actors from input
+     * @param input input data
+     * @return list of actors
      */
     public List<Actor> getActorsFromInput(final Input input) {
         List<Actor> actors = new ArrayList<>();
@@ -46,7 +64,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get list of movies from input
+     * @param input input data
+     * @return list of movies
      */
     public List<Movie> getMoviesFromInput(final Input input) {
         List<Movie> movies = new ArrayList<>();
@@ -61,7 +81,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get a list of shows from input
+     * @param input input data
+     * @return list of shows
      */
     public List<Show> getShowsFromInput(final Input input) {
         List<Show> shows = new ArrayList<>();
@@ -77,7 +99,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get a list of users from input
+     * @param input input data
+     * @return list of users
      */
     public List<User> getUsersFromInput(final Input input) {
         List<User> users = new ArrayList<>();
@@ -91,7 +115,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get a user instance from the database based on username
+     * @param name username
+     * @return user instance
      */
     public User getUserByName(final String name) {
         for (User user : userDB) {
@@ -103,7 +129,9 @@ public final class Database {
     }
 
     /**
-     *
+     * get a video instance from the database based on title
+     * @param name video title
+     * @return video instance
      */
     public Video getVideoByName(final String name) {
         for (Video movie : movieDB) {
@@ -111,7 +139,6 @@ public final class Database {
                 return movie;
             }
         }
-
         for (Video show : showDB) {
             if (show.getName().equals(name)) {
                 return show;

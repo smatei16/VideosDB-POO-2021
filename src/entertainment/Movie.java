@@ -3,14 +3,25 @@ package entertainment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * information about a movie
+ */
 public final class Movie extends Video {
-    //duration of current movie
+    /**
+     * duration of the movie
+     */
     private final int duration;
-
-    //list of ratings for current movie
+    /**
+     * list of ratings for the movie
+     */
     private List<Double> ratings;
-
+    /**
+     * the sum of ratings for the movie
+     */
     private double sumRatings;
+    /**
+     * the number of ratings for the movie
+     */
     private int totalRatings;
 
     public Movie(final String name, final int year, final List<String> genres,
@@ -45,24 +56,16 @@ public final class Movie extends Video {
     }
 
     /**
-     *
+     * updates the sum of ratings and the total number of ratings
+     * @param newRating the new rating given
      */
-    public void updateAverageRating(final double rating) {
-            this.sumRatings += rating;
+    public void updateAverageRating(final double newRating) {
+            this.sumRatings += newRating;
             this.totalRatings++;
     }
 
     @Override
     public double getAverageRating() {
         return totalRatings == 0 ? 0 : sumRatings / totalRatings;
-    }
-
-
-    public double getSumRatings() {
-        return sumRatings;
-    }
-
-    public int getTotalRatings() {
-        return totalRatings;
     }
 }

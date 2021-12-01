@@ -10,19 +10,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- *
+ * process all the information for video related queries
  */
 public class VideoQuery {
-    private Database database;
+    private final Database database;
 
     public VideoQuery(final Database database) {
         this.database = database;
     }
 
     /**
-     *
+     * process a video query based on criteria
+     * @param actionInputData action
+     * @return query result
      */
     public String processVideoQuery(final ActionInputData actionInputData) {
         return switch (actionInputData.getCriteria()) {
@@ -35,10 +36,12 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * process a rating query
+     * @param actionInputData action
+     * @return query result
      */
     public String ratingQuery(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Video> videoList;
 
         if (actionInputData.getObjectType().equals(Constants.MOVIES)) {
@@ -49,20 +52,23 @@ public class VideoQuery {
 
         filterVideos(actionInputData, videoList);
         videoList.removeIf(video -> Double.compare(video.getAverageRating(), 0) == 0);
-        Collections.sort(videoList, new RatingComparator());
+        videoList.sort(new RatingComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(videoList);
         }
+
         videoList = videoList.subList(0, Math.min(videoList.size(), actionInputData.getNumber()));
         message.append(videoList);
         return message.toString();
     }
 
     /**
-     *
+     * process a favorite query
+     * @param actionInputData action
+     * @return query result
      */
     public String favoriteQuery(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Video> videoList;
 
         if (actionInputData.getObjectType().equals(Constants.MOVIES)) {
@@ -74,13 +80,16 @@ public class VideoQuery {
         for (User user : database.getUserDB()) {
             for (String videoName : user.getFavourite()) {
                 Video video = database.getVideoByName(videoName);
+                if (video == null) {
+                    return Constants.ERROR;
+                }
                 video.updateNumFavorites();
             }
         }
 
         filterVideos(actionInputData, videoList);
         videoList.removeIf(video -> video.getNumFavorites() == 0);
-        Collections.sort(videoList, new FavoriteComparator());
+        videoList.sort(new FavoriteComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(videoList);
         }
@@ -90,10 +99,12 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * process a longest query
+     * @param actionInputData action
+     * @return query result
      */
     public String longestQuery(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Video> videoList;
 
         if (actionInputData.getObjectType().equals(Constants.MOVIES)) {
@@ -103,7 +114,7 @@ public class VideoQuery {
         }
 
         filterVideos(actionInputData, videoList);
-        Collections.sort(videoList, new LengthComparator());
+        videoList.sort(new LengthComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(videoList);
         }
@@ -113,10 +124,12 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * process a most viewed query
+     * @param actionInputData action
+     * @return query result
      */
     public String mostViewedQuery(final ActionInputData actionInputData) {
-        StringBuilder message = new StringBuilder("Query result: ");
+        StringBuilder message = new StringBuilder(Constants.QUERY_RESULT);
         List<Video> videoList;
 
         if (actionInputData.getObjectType().equals(Constants.MOVIES)) {
@@ -128,12 +141,15 @@ public class VideoQuery {
         for (User user : database.getUserDB()) {
             for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
                 Video video = database.getVideoByName(entry.getKey());
+                if (video == null) {
+                    return Constants.ERROR;
+                }
                 video.updateTotalViews(entry.getValue());
             }
         }
         filterVideos(actionInputData, videoList);
         videoList.removeIf(video -> video.getTotalViews() == 0);
-        Collections.sort(videoList, new ViewsComparator());
+        videoList.sort(new ViewsComparator());
         if (actionInputData.getSortType().equals(Constants.DESC)) {
             Collections.reverse(videoList);
         }
@@ -142,9 +158,10 @@ public class VideoQuery {
         return message.toString();
     }
 
-
     /**
-     *
+     * filter videos based on year or genre
+     * @param actionInputData action
+     * @param videoList list of videos
      */
     public void filterVideos(final ActionInputData actionInputData, final List<Video> videoList) {
         if (actionInputData.getFilters().get(Constants.FILTER_YEAR) != null) {
@@ -163,9 +180,9 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * comparator for rating sort
      */
-    class RatingComparator implements Comparator<Video> {
+    static class RatingComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             double ratingO1 = o1.getAverageRating();
@@ -178,9 +195,9 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * comparator for favorite sort
      */
-    class FavoriteComparator implements Comparator<Video> {
+    static class FavoriteComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             int numFavoritesO1 = o1.getNumFavorites();
@@ -193,9 +210,9 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * comparator for length sort
      */
-    class LengthComparator implements Comparator<Video> {
+    static class LengthComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             int lengthO1 = o1.getDuration();
@@ -208,9 +225,9 @@ public class VideoQuery {
     }
 
     /**
-     *
+     * comparator for total views sort
      */
-    class ViewsComparator implements Comparator<Video> {
+    static class ViewsComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             int totalViewsO1 = o1.getTotalViews();

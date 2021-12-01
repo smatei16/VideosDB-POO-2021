@@ -4,12 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * information about a user
+ */
 public final class User {
-    private String username;
-    private String subscription;
-    private Map<String, Integer> history;
-    private List<String> favourite;
-    private List<String> rated;
+    /**
+     * username
+     */
+    private final String username;
+    /**
+     * subscription type
+     */
+    private final String subscription;
+    /**
+     * list of watched videos and number of views for each video
+     */
+    private final Map<String, Integer> history;
+    /**
+     * list of favorite videos
+     */
+    private final List<String> favourite;
+    /**
+     * list of rated videos
+     */
+    private final List<String> rated;
 
     public User(final String username, final String subscription, final Map<String,
             Integer> history, final List<String> favourite) {

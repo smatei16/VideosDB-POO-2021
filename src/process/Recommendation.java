@@ -4,22 +4,24 @@ import common.Constants;
 import entertainment.Video;
 import fileio.ActionInputData;
 import user.User;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
+/**
+ * process all the information for recommendations
+ */
 public class Recommendation {
-    private Database database;
+    private final Database database;
 
     public Recommendation(final Database database) {
         this.database = database;
     }
 
     /**
-     *
+     * process a recommendation based on type
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String processRecommendation(final ActionInputData actionInputData) {
         return switch (actionInputData.getType()) {
@@ -33,13 +35,17 @@ public class Recommendation {
     }
 
     /**
-     *
+     * process a standard recommendation
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String standardRecommendation(final ActionInputData actionInputData) {
         User user = database.getUserByName(actionInputData.getUsername());
         List<Video> videoList = new ArrayList<>(database.getMovieDB());
         videoList.addAll(database.getShowDB());
-
+        if (user == null) {
+            return Constants.ERROR;
+        }
         for (Video video : videoList) {
             if (!user.getHistory().containsKey(video.getName())) {
                 return "StandardRecommendation result: " + video.getName();
@@ -49,15 +55,19 @@ public class Recommendation {
     }
 
     /**
-     *
+     * process a best unseen recommendation
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String bestUnseenRecommendation(final ActionInputData actionInputData) {
         User user = database.getUserByName(actionInputData.getUsername());
         List<Video> videoList = new ArrayList<>(database.getMovieDB());
+        if (user == null) {
+            return Constants.ERROR;
+        }
         videoList.addAll(database.getShowDB());
-
         videoList.removeIf(video -> user.getHistory().containsKey(video.getName()));
-        Collections.sort(videoList, new BestUnseenComparator());
+        videoList.sort(new BestUnseenComparator());
         if (videoList.isEmpty()) {
             return "BestRatedUnseenRecommendation cannot be applied!";
         } else {
@@ -66,10 +76,15 @@ public class Recommendation {
     }
 
     /**
-     *
+     * process a popular recommendation
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String popularRecommendation(final ActionInputData actionInputData) {
         User user = database.getUserByName(actionInputData.getUsername());
+        if (user == null) {
+            return Constants.ERROR;
+        }
         if (!user.getSubscription().equals(Constants.PREMIUM)) {
             return "PopularRecommendation cannot be applied!";
         }
@@ -77,7 +92,7 @@ public class Recommendation {
         videoList.addAll(database.getShowDB());
         videoList.removeIf(video -> user.getHistory().containsKey(video.getName()));
         List<String> genres = getGenresList();
-        Collections.sort(genres, new GenrePopularityComparator());
+        genres.sort(new GenrePopularityComparator());
         if (videoList.isEmpty()) {
             return "PopularRecommendation cannot be applied!";
         }
@@ -86,17 +101,21 @@ public class Recommendation {
                 if (video.getGenres().contains(genre)) {
                     return "PopularRecommendation result: " + video.getName();
                 }
-
             }
         }
         return null;
     }
 
     /**
-     *
+     * process a favorite recommendation
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String favoriteRecommendation(final ActionInputData actionInputData) {
         User user = database.getUserByName(actionInputData.getUsername());
+        if (user == null) {
+            return Constants.ERROR;
+        }
         if (!user.getSubscription().equals(Constants.PREMIUM)) {
             return "FavoriteRecommendation cannot be applied!";
         }
@@ -106,15 +125,20 @@ public class Recommendation {
         if (videoList.isEmpty()) {
             return "FavoriteRecommendation cannot be applied!";
         }
-        Collections.sort(videoList, new VideoFavoriteComparator());
+        videoList.sort(new VideoFavoriteComparator());
         return "FavoriteRecommendation result: " + videoList.get(0).getName();
     }
 
     /**
-     *
+     * process a search recommendation
+     * @param actionInputData action
+     * @return recommendation result
      */
     public String searchRecommendation(final ActionInputData actionInputData) {
         User user = database.getUserByName(actionInputData.getUsername());
+        if (user == null) {
+            return Constants.ERROR;
+        }
         if (!user.getSubscription().equals(Constants.PREMIUM)) {
             return "SearchRecommendation cannot be applied!";
         }
@@ -125,12 +149,13 @@ public class Recommendation {
         if (videoList.isEmpty()) {
             return "SearchRecommendation cannot be applied!";
         }
-        Collections.sort(videoList, new SearchComparator());
+        videoList.sort(new SearchComparator());
         return "SearchRecommendation result: " + videoList;
     }
 
     /**
-     *
+     * get the list of all genres
+     * @return list of genres
      */
     public List<String> getGenresList() {
         List<Video> videoList = new ArrayList<>(database.getMovieDB());
@@ -147,7 +172,9 @@ public class Recommendation {
     }
 
     /**
-     *
+     * get popularity for a genre
+     * @param genre desired genre
+     * @return integer
      */
     public int getGenrePopularity(final String genre) {
         List<Video> videoList = new ArrayList<>(database.getMovieDB());
@@ -163,7 +190,9 @@ public class Recommendation {
     }
 
     /**
-     *
+     * get number of appearances of a video in users' favorite lists
+     * @param name video name
+     * @return integer
      */
     public int getVideoFavorite(final String name) {
         int numberFavorite = 0;
@@ -176,9 +205,9 @@ public class Recommendation {
     }
 
     /**
-     *
+     * comparator for AverageRating sort
      */
-    class BestUnseenComparator implements Comparator<Video> {
+    static class BestUnseenComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             double ratingO1 = o1.getAverageRating();
@@ -188,7 +217,7 @@ public class Recommendation {
     }
 
     /**
-     *
+     * comparator for genre popularity sort
      */
     class GenrePopularityComparator implements Comparator<String> {
         @Override
@@ -198,7 +227,7 @@ public class Recommendation {
     }
 
     /**
-     *
+     * comparator for favorite sort
      */
     class VideoFavoriteComparator implements Comparator<Video> {
         @Override
@@ -210,9 +239,9 @@ public class Recommendation {
     }
 
     /**
-     *
+     * comparator for search recommendation sort
      */
-    class SearchComparator implements Comparator<Video> {
+    static class SearchComparator implements Comparator<Video> {
         @Override
         public int compare(final Video o1, final Video o2) {
             double ratingO1 = o1.getAverageRating();

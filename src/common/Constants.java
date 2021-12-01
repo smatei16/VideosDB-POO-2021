@@ -89,8 +89,10 @@ public final class Constants {
     public static final String POPULAR = "popular";
     public static final String PREMIUM = "PREMIUM";
     public static final String SEARCH = "search";
+    public static final String QUERY_RESULT = "Query result: ";
     public static final int FILTER_YEAR = 0;
     public static final int FILTER_GENRE = 1;
     public static final int FILTER_WORDS = 2;
     public static final int FILTER_AWARDS = 3;
+    public static final String ERROR = "error";
 }
